@@ -1,0 +1,47 @@
+@using cls.web.plataforma.Model.Components;
+
+<div class="modal fade @modalClass" style="display: @(IsDisplayed ? "block" : "none"); background-color: rgba(10,10,10,.8);" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">@Entity.Titulo</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="() => Close()"></button>
+      </div>
+      <div class="modal-body">
+        @Entity.Descricao
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="() => Close()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {    
+    
+    [Parameter]
+    public ModalEntity Entity { get; set; } = new(){
+        Titulo = "Title", 
+        Descricao = "Body"
+    };
+    
+    private bool IsDisplayed { get; set; }
+    private string modalDisplay = "none;";
+    private string modalClass = "";
+
+    public void Open()
+    {
+        modalDisplay = "block;";
+        modalClass = "show";
+        IsDisplayed = true;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        modalDisplay = "none";
+        modalClass = "";
+        IsDisplayed = false;
+        StateHasChanged();
+    }
+}  

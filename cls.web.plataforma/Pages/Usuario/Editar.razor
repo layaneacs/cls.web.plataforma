@@ -1,0 +1,71 @@
+@page "/user/edit/{id}"
+
+<PageTitle>Usuários</PageTitle>
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using cls.web.plataforma.Data
+@using cls.web.plataforma.Data.Interface;
+@using cls.web.plataforma.Model
+
+@inject IPessoaService _pessoaService
+@inject NavigationManager _navigation;
+@inject ISessionContext _session;
+
+<div class="card p-4">
+    <h1>Editar usuário</h1>
+    <EditForm Model="@pessoa">
+        <div class="form-group row p-2">
+            <div class="col-md-6">
+                <input type="text" class="form-control" placeholder="Nome" @bind-value="pessoa.nome" />
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" placeholder="Sobrenome" @bind-value="pessoa.sobrenome" />
+            </div>
+        </div>
+        <div class="form-group row p-2">
+            <div class="col-md-6">
+                <input type="email" class="form-control" placeholder="Email" @bind-value="pessoa.email" />
+            </div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" placeholder="Telefone" @bind-value="pessoa.telefone" />
+            </div>
+        </div>
+        <div class="form-group row p-2">
+            <div class="col-md-6">
+                <input type="text" class="form-control" placeholder="Data de Nascimento"
+                    @bind-value="pessoa.dataNascimento" />
+            </div>
+        </div>
+        <div class="form-group row p-2">
+            <div class="text-center">
+                <button class="btn btn-primary" @onclick="@(async () => await EditPessoa())">Salvar alterações</button>
+
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private Pessoa pessoa = new();
+    [Parameter]
+    public string? id { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userSession = await _session.Get();
+
+        if (string.IsNullOrWhiteSpace(userSession)) _navigation.NavigateTo("/login");
+
+        if (!string.IsNullOrEmpty(id))
+            pessoa = await _pessoaService.GetById(id);
+    }
+    protected async Task EditPessoa()
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+            var salved = await _pessoaService.Update(id, pessoa);
+            if(salved) _navigation.NavigateTo("/");
+        }
+    }
+}

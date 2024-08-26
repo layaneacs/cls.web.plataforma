@@ -1,0 +1,46 @@
+﻿@page "/about"
+@using cls.web.plataforma.Shared.Components;
+@using cls.web.plataforma.Model.Components;
+@using cls.web.plataforma.Configs;
+
+@inject IOptionsConfig _configurations
+
+
+<PageTitle>About</PageTitle>
+
+<p>© 2024 LC Networks Inc. All Rights Reserved. - @currentCount</p>
+
+<button @onclick="() => _modalDefault?.Open()" class="btn btn-outline-danger">Open</button>
+<ModalDefault @ref="_modalDefault" Entity=infoModal />
+
+<button @onclick="() => _modalConfirmation?.Open()" class="btn btn-outline-danger">Open Confirmation</button>
+<ModalConfirmation @ref="_modalConfirmation" Entity=infoModalConfirmation ConfirmedCallback="ChamarServiceSeConfirmation" />
+<p>@confirmation</p>
+
+
+@code {
+    private string? currentCount;
+    private string confirmation = string.Empty;
+    private ModalDefault? _modalDefault;
+    private ModalConfirmation? _modalConfirmation;
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentCount = _configurations.GetAppVersion();
+    }
+
+
+    private ModalEntity infoModal { get; set; } = new(){
+        Titulo = "Quem sou eu:", 
+        Descricao = "É eu mesmo! :D "
+    };
+    private ModalEntity infoModalConfirmation { get; set; } = new(){
+        Titulo = "Delete", 
+        Descricao = "Tem certeza que você deseja deletar?"
+    };
+
+    private void ChamarServiceSeConfirmation()
+    {
+        confirmation = "Confirmado!";
+    }
+}

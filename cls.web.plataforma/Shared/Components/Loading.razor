@@ -1,0 +1,16 @@
+@using cls.web.plataforma.Model.Components;
+
+<div class="container text-center">
+  <div class="spinner-grow" role="status">
+  </div>
+  <div>
+      <span class="sr-only">@Message</span>
+  </div>
+</div>
+
+
+@code {    
+    
+    [Parameter]
+    public string? Message { get; set; }
+}  

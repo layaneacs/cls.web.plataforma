@@ -1,0 +1,83 @@
+@page "/"
+
+<PageTitle>Usuários</PageTitle>
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using cls.web.plataforma.Data
+@using cls.web.plataforma.Data.Interface;
+@using cls.web.plataforma.Data.Service
+@using cls.web.plataforma.Model
+@using cls.web.plataforma.Shared.Components;
+@using cls.web.plataforma.Model.Components;
+
+@inject IPessoaService _pessoaService
+@inject NavigationManager _navigation;
+@inject ISessionContext _session;
+
+<h1>Usuários</h1>
+
+
+@if (pessoas == null)
+{
+    <Loading Message="Loading..." />
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>NOME</th>
+                <th>EMAIL</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pessoa in pessoas)
+            {
+                <tr>
+                    <td>@pessoa.id</td>
+                    <td>@pessoa.nome @pessoa.sobrenome</td>
+                    <td>@pessoa.email</td>
+                    <td>
+                        <a href=@($"/user/edit/{pessoa.id}") class="btn btn-primary"><span class="oi oi-pencil" /> </a>
+                        <button class="btn btn-danger" @onclick="() => _modalConfirmation?.Open()"><span
+                                class="oi oi-trash" /></button>
+                        <ModalConfirmation @ref="_modalConfirmation" Entity=_deleteModal
+                            ConfirmedCallback="async () => await Delete(pessoa.id)" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Pessoa[]? pessoas;
+    private ModalConfirmation? _modalConfirmation;
+    private ModalEntity _deleteModal { get; set; } = new()
+        {
+            Titulo = "Apagar",
+            Descricao = "Tem certeza que deseja apagar esse usuário?"
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userSession = await _session.Get();
+
+        if (!string.IsNullOrWhiteSpace(userSession))
+        {
+            pessoas = await _pessoaService.Get();
+        }
+        else
+        {
+            _navigation.NavigateTo("/login");
+        }
+    }
+
+    private async Task Delete(string? id)
+    {
+        await _pessoaService.Delete(id);
+        pessoas = await _pessoaService.Get();
+    }
+}
