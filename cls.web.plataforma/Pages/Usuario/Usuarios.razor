@@ -19,7 +19,7 @@
 
 @if (pessoas == null)
 {
-    <Loading Message="Loading..." />
+    <Loading Message="Carregando lista de usuários..." />
 }
 else
 {
@@ -57,8 +57,8 @@ else
     private ModalConfirmation? _modalConfirmation;
     private ModalEntity _deleteModal { get; set; } = new()
         {
-            Titulo = "Apagar",
-            Descricao = "Tem certeza que deseja apagar esse usuário?"
+            Titulo = "Excluir",
+            Descricao = "Tem certeza que deseja remover esse usuário?"
         };
 
     protected override async Task OnInitializedAsync()
