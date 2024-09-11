@@ -18,6 +18,7 @@ builder.Services.Configure<Configurations>(config =>
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IPessoaService, PessoaService>();
+builder.Services.AddScoped<ICalendarService, CalendarService>();
 builder.Services.AddSingleton<IOptionsConfig, OptionsConfig>();
 
 builder.Services.AddScoped<ISessionContext, SessionContext>();

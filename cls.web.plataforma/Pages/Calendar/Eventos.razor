@@ -1,0 +1,85 @@
+@page "/eventos"
+
+<PageTitle>Próximos eventos</PageTitle>
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using System.Globalization
+@using cls.web.plataforma.Data
+@using cls.web.plataforma.Data.Interface;
+@using cls.web.plataforma.Data.Service
+@using cls.web.plataforma.Model
+@using cls.web.plataforma.Model.Calendar
+@using cls.web.plataforma.Shared.Components;
+@using cls.web.plataforma.Model.Components;
+
+@inject ICalendarService _calendarService
+@inject NavigationManager _navigation;
+@inject ISessionContext _session;
+
+<h1>Eventos</h1>
+
+
+@if (calendars == null)
+{
+    <Loading Message="Carregando lista de eventos..." />
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>PARTE 1</th>
+                <th>PARTE 2</th>
+                <th>PARTE 3</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var calendar in calendars)
+            {
+                <tr>
+                    <td>@calendar.calendarDate.ToString("dddd dd MMMM", CultureInfo.CreateSpecificCulture("en-US"))</td>
+                    <td>@calendar.title @calendar.description</td>
+                    <td>@calendar.available / @calendar.total</td>
+                    <td>
+                        <a href=@($"/event/edit/{calendar.id}") class="btn btn-primary"><span class="oi oi-pencil" /> </a>
+                        <button class="btn btn-danger" @onclick="() => _modalConfirmation?.Open()"><span
+                                class="oi oi-trash" /></button>
+                        <ModalConfirmation @ref="_modalConfirmation" Entity=_deleteModal
+                            ConfirmedCallback="async () => await Delete(calendar.id)" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private CalendarModel[]? calendars;
+    private ModalConfirmation? _modalConfirmation;
+    private ModalEntity _deleteModal { get; set; } = new()
+        {
+            Titulo = "Excluir",
+            Descricao = "Tem certeza que deseja remover esse evento?"
+        };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userSession = "anonimo";
+
+        if (!string.IsNullOrWhiteSpace(userSession))
+        {
+            calendars = await _calendarService.Get();
+        }
+        else
+        {
+            _navigation.NavigateTo("/login");
+        }
+    }
+
+    private async Task Delete(int id)
+    {
+        //await _calendarService.Delete(id);
+        //calendars = await _calendarService.Get();
+    }
+}

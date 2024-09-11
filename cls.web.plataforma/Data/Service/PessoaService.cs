@@ -160,6 +160,5 @@ namespace cls.web.plataforma.Data.Service
                 return default;
             }
         }
-
     }
 }
