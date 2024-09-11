@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Text.Json;
-
 using cls.web.plataforma.Data.Interface;
 using cls.web.plataforma.Model;
 using System.Text;
 using System.Net.Http.Headers;
-
 
 namespace cls.web.plataforma.Data.Service
 {
@@ -122,10 +116,10 @@ namespace cls.web.plataforma.Data.Service
                 {
                     var responseValue = await httpResponseMessage.Content.ReadAsStreamAsync();
                     var response = await JsonSerializer.DeserializeAsync<PersonResponse>(responseValue);
-                    return response.data.First() ?? default;
+                    return response?.data?.First() ?? new();
                 }
 
-                return default;
+                return new();
             }
             catch (Exception err)
             {
@@ -149,15 +143,15 @@ namespace cls.web.plataforma.Data.Service
                 {
                     var responseValue = await httpResponseMessage.Content.ReadAsStreamAsync();
                     var response = await JsonSerializer.DeserializeAsync<PersonResponse>(responseValue);
-                    return response.data ?? default;
+                    return response?.data ?? [];
                 }
 
-                return default;
+                return [];
             }
             catch (Exception err)
             {
                 //throw new Exception("PersonService", err);
-                return default;
+                return [];
             }
         }
     }

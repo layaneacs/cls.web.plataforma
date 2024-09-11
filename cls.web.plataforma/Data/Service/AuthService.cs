@@ -36,6 +36,11 @@ public class AuthService : IAuthService
             {
                 var responseValue = await httpResponseMessage.Content.ReadAsStreamAsync();
                 var response = await JsonSerializer.DeserializeAsync<AuthResponse>(responseValue);
+                if (response?.data is null)
+                {
+                    output.Erro("Token not found");
+                    return output;
+                }
                 output.Sucesso(response);
                 return output;
             }

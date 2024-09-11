@@ -16,8 +16,8 @@
 @inject NavigationManager _navigation;
 @inject ISessionContext _session;
 
-<h1>Eventos</h1>
 
+<h1>Eventos</h1>
 
 @if (calendars == null)
 {
@@ -25,33 +25,37 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>PARTE 1</th>
-                <th>PARTE 2</th>
-                <th>PARTE 3</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var calendar in calendars)
-            {
-                <tr>
-                    <td>@calendar.calendarDate.ToString("dddd dd MMMM", CultureInfo.CreateSpecificCulture("en-US"))</td>
-                    <td>@calendar.title @calendar.description</td>
-                    <td>@calendar.available / @calendar.total</td>
-                    <td>
-                        <a href=@($"/event/edit/{calendar.id}") class="btn btn-primary"><span class="oi oi-pencil" /> </a>
-                        <button class="btn btn-danger" @onclick="() => _modalConfirmation?.Open()"><span
-                                class="oi oi-trash" /></button>
-                        <ModalConfirmation @ref="_modalConfirmation" Entity=_deleteModal
-                            ConfirmedCallback="async () => await Delete(calendar.id)" />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="grid gap-0 row-gap-3 text-center main">
+    @foreach (var calendar in calendars)
+    {
+    <div class="card event" style="margin-bottom: 25px; box-shadow: 2px 2px 1px lightblue" > 
+        <div class="card-body ">
+             <div class="row align-items-center">
+                <div class="col">
+                            @calendar.calendarDate.ToString("dddd, dd MMMM yyyy H:mm")
+                </div>
+                <div class="col-6">
+                    <div class = "row title">
+                        <div class="col">
+                            @calendar.title
+                        </div>                    
+                    </div>
+                    <div class = "row description">
+                        <div class="col">
+                            @calendar.description
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    Disponíveis @calendar.available / @calendar.total
+                </div>
+            </div>
+        </div> 
+    </div>         
+    }
+
+</div>
+
 }
 
 @code {
@@ -77,9 +81,11 @@ else
         }
     }
 
-    private async Task Delete(int id)
+/*
+    private Task Delete(int id)
     {
         //await _calendarService.Delete(id);
         //calendars = await _calendarService.Get();
     }
+    */
 }

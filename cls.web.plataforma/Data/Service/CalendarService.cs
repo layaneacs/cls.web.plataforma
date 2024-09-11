@@ -30,15 +30,15 @@ namespace cls.web.plataforma.Data.Service
                 {
                     var responseValue = await httpResponseMessage.Content.ReadAsStreamAsync();
                     var response = await JsonSerializer.DeserializeAsync<CalendarModel[]>(responseValue);
-                    return response ?? default;
+                    return response ?? [];
                 }
 
-                return default;
+                return [];
             }
             catch (Exception err)
             {
                 //throw new Exception("PersonService", err);
-                return default;
+                return [];
             }
         }
     }
